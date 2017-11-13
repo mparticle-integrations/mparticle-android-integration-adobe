@@ -193,6 +193,11 @@ public class AdobeKit extends KitIntegration implements AttributeListener, KitIn
         return builder.toString();
     }
 
+    @Override
+    public Object getInstance() {
+        return new AdobeApi(getMarketingCloudId());
+    }
+
     private void parseResponse(JSONObject jsonObject) {
         try {
             String marketingCloudId = jsonObject.getString(D_MID_KEY);
