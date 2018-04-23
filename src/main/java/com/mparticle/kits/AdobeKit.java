@@ -28,17 +28,20 @@ public class AdobeKit extends KitIntegration implements AttributeListener, KitIn
     private static final String AUDIENCE_MANAGER_BLOB = "aamb";
     private static final String AUDIENCE_MANAGER_LOCATION_HINT = "aamlh";
 
-    static final String D_MID_KEY = "d_mid";
-    static final String D_ORIG_ID_KEY = "d_orgid";
-    static final String D_BLOB_KEY = "d_blob";
-    static final String DCS_REGION_KEY = "dcs_region";
-    static final String D_PLATFORM_KEY = "d_ptfm";
-    static final String D_VER = "d_ver";
+    private static final String D_MID_KEY = "d_mid";
+    private static final String D_ORIG_ID_KEY = "d_orgid";
+    private static final String D_BLOB_KEY = "d_blob";
+    private static final String DCS_REGION_KEY = "dcs_region";
+    private static final String D_PLATFORM_KEY = "d_ptfm";
+    private static final String D_VER = "d_ver";
+
+    private static final String DEFAULT_URL = "dpm.demdex.net";
 
     private static final Integer PUSH_TOKEN_KEY = 20919;
     private static final Integer GOOGLE_AD_ID_KEY = 20914;
 
     private final String dVer = "2";
+    private String url = DEFAULT_URL;
 
     private String mOrgId;
 
@@ -138,7 +141,7 @@ public class AdobeKit extends KitIntegration implements AttributeListener, KitIn
             @Override
             public void run() {
                 try {
-                    URL url = new URL("https", "dpm.demdex.net", "/id?" + encodeIds());
+                    URL url = new URL("https", AdobeKit.this.url, "/id?" + encodeIds());
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setConnectTimeout(2000);
                     urlConnection.setReadTimeout(10000);
@@ -196,6 +199,14 @@ public class AdobeKit extends KitIntegration implements AttributeListener, KitIn
     @Override
     public Object getInstance() {
         return new AdobeApi(getMarketingCloudId());
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     private void parseResponse(JSONObject jsonObject) {
