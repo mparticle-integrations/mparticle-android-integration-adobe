@@ -3,13 +3,9 @@ package com.mparticle.kits;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Process;
 
-import com.mparticle.*;
+import com.mparticle.MParticle;
 import com.mparticle.internal.MPUtility;
-import com.mparticle.internal.PushRegistrationHelper;
 import com.mparticle.kits.KitIntegration.AttributeListener;
 
 import org.json.JSONException;
@@ -168,11 +164,7 @@ public class AdobeKit extends KitIntegration implements AttributeListener, KitIn
         if (adId != null) {
             gaid = adId.id;
         }
-        String pushId = null;
-        PushRegistrationHelper.PushRegistration pushRegistration = PushRegistrationHelper.getLatestPushRegistration(getContext());
-        if (pushRegistration != null) {
-            pushId = pushRegistration.instanceId;
-        }
+        String pushId = getKitManager().getPushInstanceId();
         String marketingCloudId = getMarketingCloudId();
         String dBlob = getDBlob();
         String dcsRegion = getDcsRegion();
