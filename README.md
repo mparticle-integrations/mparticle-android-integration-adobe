@@ -17,7 +17,7 @@ This repository contains the Adobe integration for the [mParticle Android SDK](h
 
 ### Documentation
 
-[Adobe integration](http://docs.mparticle.com/?java#adobe)
+[Adobe integration](https://docs.mparticle.com/integrations/amc/event/)
 
 ### License
 
