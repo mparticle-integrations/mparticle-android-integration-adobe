@@ -18,10 +18,11 @@ import java.util.Map;
 
 abstract class AdobeKitBase extends KitIntegration implements KitIntegration.AttributeListener, KitIntegration.PushListener, KitIntegration.ApplicationStateListener {
 
-    private static final String MARKETING_CLOUD_ID_KEY = "mid";
+    static final String MARKETING_CLOUD_ID_KEY = "mid";
     private static final String ORG_ID_KEY = "organizationID";
     private static final String AUDIENCE_MANAGER_BLOB = "aamb";
     private static final String AUDIENCE_MANAGER_LOCATION_HINT = "aamlh";
+    static final String AUDIENCE_MANAGER_SERVER = "audienceManagerServer";
 
     private static final String D_MID_KEY = "d_mid";
     private static final String D_ORIG_ID_KEY = "d_orgid";
@@ -45,6 +46,9 @@ abstract class AdobeKitBase extends KitIntegration implements KitIntegration.Att
     @Override
     protected List<ReportingMessage> onKitCreate(Map<String, String> map, Context context) throws IllegalArgumentException {
         mOrgId = map.get(ORG_ID_KEY);
+        if (map.containsKey(AUDIENCE_MANAGER_SERVER)) {
+            url = map.get(AUDIENCE_MANAGER_SERVER);
+        }
         getMarketingCloudId();
         return null;
     }
