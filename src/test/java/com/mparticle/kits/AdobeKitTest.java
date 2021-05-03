@@ -3,11 +3,13 @@ package com.mparticle.kits;
 import android.content.Context;
 
 import com.mparticle.MParticle;
+import com.mparticle.internal.KitManager;
 import com.mparticle.internal.MPUtility;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,6 +74,22 @@ public class AdobeKitTest {
         String url2 = getKit().encodeIds("<MCID>", "<ORG ID>", "<BLOB>", "<REGION>", "<PUSH TOKEN>", "<GAID>", userIdentities);
         String testUrls2 = "d_mid=<MCID>&d_ver=2&d_orgid=<ORG ID>&d_cid=20914%01<GAID>&d_cid=20919%01<PUSH TOKEN>&dcs_region=<REGION>&d_blob=<BLOB>&d_ptfm=android&d_cid_ic=customerid%01<CUSTOMER ID>&d_cid_ic=email%01<EMAIL>";
         assertEqualUnorderedUrlParams(url2, testUrls2);
+    }
+
+    @Test
+    public void testGetUrlInstance() throws Exception {
+        AdobeKit kit = getKit();
+        kit.setKitManager(Mockito.mock(KitManagerImpl.class));
+        Map<String, String> integrationAttributes = new HashMap<>();
+        integrationAttributes.put(AdobeKitBase.MARKETING_CLOUD_ID_KEY, "foo");
+        Mockito.when(kit.getKitManager().getIntegrationAttributes(Mockito.any(KitIntegration.class))).thenReturn(integrationAttributes);
+
+        Map settings = new HashMap<>();
+        settings.put(AdobeKitBase.AUDIENCE_MANAGER_SERVER, "some.random.url");
+        kit.onKitCreate(settings, Mockito.mock(Context.class));
+
+        String url = kit.getUrl();
+        assertEquals(url, "some.random.url");
     }
 
     private void assertEqualUnorderedUrlParams(String url1, String url2) {
