@@ -153,7 +153,7 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
             var marketingCloudId = jsonObject.getString(D_MID_KEY)
             val dcsRegion = jsonObject.optString(DCS_REGION_KEY)
             val dBlob = jsonObject.optString(D_BLOB_KEY)
-            marketingCloudId = marketingCloudId
+            setMarketingCloudId(marketingCloudId)
             setDcsRegion(dcsRegion)
             setDBlob(dBlob)
         } catch (e: JSONException) {
@@ -165,7 +165,7 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
      * fetch the MarketingCloudId. If it can't be found in our storage, assume that this
      * user is migrating from the Adobe SDK and try to fetch it from where the Adobe SDK would store it
      */
-    private var marketingCloudId: String?
+    private val marketingCloudId: String?
          get() {
             var marketingCloudId = integrationAttributes[MARKETING_CLOUD_ID_KEY]
             if (KitUtils.isEmpty(marketingCloudId)) {
@@ -183,11 +183,13 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
             }
             return marketingCloudId
         }
-        private set(id) {
-            val integrationAttributes = integrationAttributes
-            integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
-            setIntegrationAttributes(integrationAttributes)
-        }
+
+    private fun setMarketingCloudId(id: String) {
+        val integrationAttributes = integrationAttributes
+        integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
+        setIntegrationAttributes(integrationAttributes)
+    }
+
     private val dcsRegion: String?
          get() = integrationAttributes[AUDIENCE_MANAGER_LOCATION_HINT]
 
