@@ -150,10 +150,10 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
 
     private fun parseResponse(jsonObject: JSONObject) {
         try {
-            var marketingCloudId = jsonObject.getString(D_MID_KEY)
+            var marketingCloudIdKey = jsonObject.getString(D_MID_KEY)
             val dcsRegion = jsonObject.optString(DCS_REGION_KEY)
             val dBlob = jsonObject.optString(D_BLOB_KEY)
-            marketingCloudId = marketingCloudId
+            marketingCloudId = marketingCloudIdKey
             setDcsRegion(dcsRegion)
             setDBlob(dBlob)
         } catch (e: JSONException) {
@@ -165,29 +165,30 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
      * fetch the MarketingCloudId. If it can't be found in our storage, assume that this
      * user is migrating from the Adobe SDK and try to fetch it from where the Adobe SDK would store it
      */
-    private var marketingCloudId: String?
-         get() {
-            var marketingCloudId = integrationAttributes[MARKETING_CLOUD_ID_KEY]
-            if (KitUtils.isEmpty(marketingCloudId)) {
+    private var marketingCloudId: String? = null
+        get() {
+            var marketingCloudIdKey = integrationAttributes[MARKETING_CLOUD_ID_KEY]
+            if (KitUtils.isEmpty(marketingCloudIdKey)) {
                 var adobeSharedPrefs =
                     context.getSharedPreferences("visitorIDServiceDataStore", Context.MODE_PRIVATE)
                 marketingCloudId = adobeSharedPrefs.getString("ADOBEMOBILE_PERSISTED_MID", null)
-                if (KitUtils.isEmpty(marketingCloudId)) {
+                if (KitUtils.isEmpty(marketingCloudIdKey)) {
                     adobeSharedPrefs =
                         context.getSharedPreferences("APP_MEASUREMENT_CACHE", Context.MODE_PRIVATE)
                     marketingCloudId = adobeSharedPrefs.getString("ADBMOBILE_PERSISTED_MID", null)
                 }
-                if (!KitUtils.isEmpty(marketingCloudId)) {
-                    marketingCloudId = marketingCloudId
+                if (!KitUtils.isEmpty(marketingCloudIdKey)) {
+                    marketingCloudId = marketingCloudIdKey
                 }
             }
-            return marketingCloudId
+            return field
         }
         private set(id) {
             val integrationAttributes = integrationAttributes
             integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
             setIntegrationAttributes(integrationAttributes)
         }
+
     private val dcsRegion: String?
          get() = integrationAttributes[AUDIENCE_MANAGER_LOCATION_HINT]
 
