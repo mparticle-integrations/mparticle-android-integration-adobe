@@ -208,7 +208,7 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
         integrationAttributes = attrs
     }
 
-    private inner class UrlBuilder internal constructor() {
+    private inner class UrlBuilder() {
         var builder: StringBuilder = StringBuilder()
         var hasValue = false
         fun append(key: String?, value: String?): UrlBuilder {
