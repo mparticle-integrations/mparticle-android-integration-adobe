@@ -28,7 +28,7 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
         if (map.containsKey(AUDIENCE_MANAGER_SERVER)) {
             url = map[AUDIENCE_MANAGER_SERVER]
         }
-        marketingCloudId
+        syncIds()
         return emptyList()
     }
 
@@ -178,7 +178,7 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
                     marketingCloudIdKey = adobeSharedPrefs.getString("ADBMOBILE_PERSISTED_MID", null)
                 }
                 if (!KitUtils.isEmpty(marketingCloudIdKey)) {
-                    return marketingCloudIdKey
+                    marketingCloudId = marketingCloudIdKey
                 }
             }
             return marketingCloudIdKey
@@ -186,8 +186,10 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
 
         private set(id) {
             val integrationAttributes = integrationAttributes
-            integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
-            setIntegrationAttributes(integrationAttributes)
+            if ((id?.length ?: 0 ) > 0 && !id.equals(integrationAttributes[MARKETING_CLOUD_ID_KEY])) {
+                integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
+                setIntegrationAttributes(integrationAttributes)
+            }
         }
 
     private val dcsRegion: String?
