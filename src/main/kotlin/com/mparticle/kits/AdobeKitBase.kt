@@ -186,7 +186,7 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
 
         private set(id) {
             val integrationAttributes = integrationAttributes
-            if ((id?.length ?: 0 ) > 0 && !id.equals(integrationAttributes[MARKETING_CLOUD_ID_KEY])) {
+            if (!id.isNullOrEmpty() && !id.equals(integrationAttributes[MARKETING_CLOUD_ID_KEY])) {
                 integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
                 setIntegrationAttributes(integrationAttributes)
             }
