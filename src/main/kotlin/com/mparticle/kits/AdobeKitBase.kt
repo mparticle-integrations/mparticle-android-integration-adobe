@@ -82,26 +82,24 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
         return false
     }
 
+    @Synchronized
     private fun syncIds() {
         if (this.requestInProgress) return
-
-        synchronized(this) {
-            requestInProgress = true
-            executeNetworkRequest {
-                try {
-                    val url = URL("https", url, "/id?" + encodeIds())
-                    val urlConnection = url.openConnection() as HttpURLConnection
-                    urlConnection.connectTimeout = 2000
-                    urlConnection.readTimeout = 10000
-                    if (urlConnection.responseCode in 200..299) {
-                        val response = MPUtility.getJsonResponse(urlConnection)
-                        parseResponse(response)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+        requestInProgress = true
+        executeNetworkRequest {
+            try {
+                val url = URL("https", url, "/id?" + encodeIds())
+                val urlConnection = url.openConnection() as HttpURLConnection
+                urlConnection.connectTimeout = 2000
+                urlConnection.readTimeout = 10000
+                if (urlConnection.responseCode in 200..299) {
+                    val response = MPUtility.getJsonResponse(urlConnection)
+                    parseResponse(response)
                 }
-                requestInProgress = false
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
+            requestInProgress = false
         }
     }
 
