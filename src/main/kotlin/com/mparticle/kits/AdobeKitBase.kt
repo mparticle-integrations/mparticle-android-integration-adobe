@@ -5,10 +5,11 @@ import android.content.Intent
 import com.mparticle.MParticle.IdentityType
 import com.mparticle.internal.MPUtility
 import com.mparticle.internal.MPUtility.AdIdInfo
-import com.mparticle.kits.KitIntegration.*
+import com.mparticle.kits.KitIntegration.ApplicationStateListener
+import com.mparticle.kits.KitIntegration.AttributeListener
+import com.mparticle.kits.KitIntegration.PushListener
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -81,29 +82,25 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
         return false
     }
 
-    var deferred = false
     private fun syncIds() {
-        if (requestInProgress) {
-            deferred = true
-        }
-        requestInProgress = true
-        executeNetworkRequest {
-            try {
-                val url = URL("https", url, "/id?" + encodeIds())
-                val urlConnection = url.openConnection() as HttpURLConnection
-                urlConnection.connectTimeout = 2000
-                urlConnection.readTimeout = 10000
-                if (urlConnection.responseCode in 200..299) {
-                    val response = MPUtility.getJsonResponse(urlConnection)
-                    parseResponse(response)
+        if (this.requestInProgress) return
+
+        synchronized(this) {
+            requestInProgress = true
+            executeNetworkRequest {
+                try {
+                    val url = URL("https", url, "/id?" + encodeIds())
+                    val urlConnection = url.openConnection() as HttpURLConnection
+                    urlConnection.connectTimeout = 2000
+                    urlConnection.readTimeout = 10000
+                    if (urlConnection.responseCode in 200..299) {
+                        val response = MPUtility.getJsonResponse(urlConnection)
+                        parseResponse(response)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            requestInProgress = false
-            if (deferred) {
-                deferred = false
-                syncIds()
+                requestInProgress = false
             }
         }
     }
@@ -189,6 +186,9 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
             if (!id.isNullOrEmpty() && !id.equals(integrationAttributes[MARKETING_CLOUD_ID_KEY])) {
                 integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
                 setIntegrationAttributes(integrationAttributes)
+                val adobeSharedPrefs =
+                    context.getSharedPreferences("visitorIDServiceDataStore", Context.MODE_PRIVATE)
+                adobeSharedPrefs.edit().putString("ADOBEMOBILE_PERSISTED_MID", id).apply()
             }
         }
 
