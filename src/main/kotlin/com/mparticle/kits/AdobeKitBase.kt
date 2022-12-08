@@ -5,10 +5,11 @@ import android.content.Intent
 import com.mparticle.MParticle.IdentityType
 import com.mparticle.internal.MPUtility
 import com.mparticle.internal.MPUtility.AdIdInfo
-import com.mparticle.kits.KitIntegration.*
+import com.mparticle.kits.KitIntegration.ApplicationStateListener
+import com.mparticle.kits.KitIntegration.AttributeListener
+import com.mparticle.kits.KitIntegration.PushListener
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -28,7 +29,7 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
         if (map.containsKey(AUDIENCE_MANAGER_SERVER)) {
             url = map[AUDIENCE_MANAGER_SERVER]
         }
-        marketingCloudId
+        syncIds()
         return emptyList()
     }
 
@@ -81,11 +82,9 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
         return false
     }
 
-    var deferred = false
+    @Synchronized
     private fun syncIds() {
-        if (requestInProgress) {
-            deferred = true
-        }
+        if (this.requestInProgress) return
         requestInProgress = true
         executeNetworkRequest {
             try {
@@ -97,14 +96,10 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
                     val response = MPUtility.getJsonResponse(urlConnection)
                     parseResponse(response)
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
             requestInProgress = false
-            if (deferred) {
-                deferred = false
-                syncIds()
-            }
         }
     }
 
@@ -178,7 +173,7 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
                     marketingCloudIdKey = adobeSharedPrefs.getString("ADBMOBILE_PERSISTED_MID", null)
                 }
                 if (!KitUtils.isEmpty(marketingCloudIdKey)) {
-                    return marketingCloudIdKey
+                    marketingCloudId = marketingCloudIdKey
                 }
             }
             return marketingCloudIdKey
@@ -186,8 +181,13 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
 
         private set(id) {
             val integrationAttributes = integrationAttributes
-            integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
-            setIntegrationAttributes(integrationAttributes)
+            if (!id.isNullOrEmpty() && !id.equals(integrationAttributes[MARKETING_CLOUD_ID_KEY])) {
+                integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
+                setIntegrationAttributes(integrationAttributes)
+                val adobeSharedPrefs =
+                    context.getSharedPreferences("visitorIDServiceDataStore", Context.MODE_PRIVATE)
+                adobeSharedPrefs.edit().putString("ADOBEMOBILE_PERSISTED_MID", id).apply()
+            }
         }
 
     private val dcsRegion: String?
