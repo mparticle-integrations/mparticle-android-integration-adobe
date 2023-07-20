@@ -3,8 +3,10 @@ package com.mparticle.kits
 import android.content.Context
 
 import com.mparticle.MParticle
+import com.mparticle.MParticleOptions
 import com.mparticle.internal.KitManager
 import com.mparticle.internal.MPUtility
+import org.junit.Assert
 
 import org.junit.Test
 import org.mockito.Mockito
@@ -49,15 +51,16 @@ class AdobeKitTest {
 
     @Test
     fun testClassName() {
-        val factory = KitIntegrationFactory()
-        val integrations = factory.knownIntegrations
+        val options = Mockito.mock(MParticleOptions::class.java)
+        val factory = KitIntegrationFactory(options)
+        val integrations = factory.supportedKits.values
         val className = kit.javaClass.name
-        for ((_, value) in integrations) {
-            if (value == className) {
+        for (integration in integrations) {
+            if (integration.name == className) {
                 return
             }
         }
-        fail("$className not found as a known integration.")
+        Assert.fail("$className not found as a known integration.")
     }
 
     @Test
