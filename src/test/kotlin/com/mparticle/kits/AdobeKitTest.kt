@@ -99,13 +99,14 @@ class AdobeKitTest {
         kit.kitManager = Mockito.mock(KitManagerImpl::class.java)
         val integrationAttributes = HashMap<String, String>()
         integrationAttributes[AdobeKitBase.MARKETING_CLOUD_ID_KEY] = "foo"
-        Mockito.`when`(
-            kit
-                .kitManager
-                .getIntegrationAttributes(
-                    Mockito.any(KitIntegration::class.java),
-                ),
-        ).thenReturn(integrationAttributes)
+        Mockito
+            .`when`(
+                kit.kitManager
+                    .getIntegrationAttributes(
+                        Mockito.any(KitIntegration::class.java),
+                    ),
+            )
+            .thenReturn(integrationAttributes)
 
         val settings = HashMap<String, String>()
         settings[AdobeKitBase.AUDIENCE_MANAGER_SERVER] = "some.random.url"
