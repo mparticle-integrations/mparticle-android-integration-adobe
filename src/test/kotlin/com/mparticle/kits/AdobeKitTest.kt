@@ -4,9 +4,9 @@ import android.content.Context
 import com.mparticle.MParticle
 import com.mparticle.MParticleOptions
 import com.mparticle.kits.AdobeKitBase
-import com.mparticle.kits.KitManagerImpl
 import com.mparticle.kits.KitIntegration
 import com.mparticle.kits.KitIntegrationFactory
+import com.mparticle.kits.KitManagerImpl
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -100,7 +100,8 @@ class AdobeKitTest {
         val integrationAttributes = HashMap<String, String>()
         integrationAttributes[AdobeKitBase.MARKETING_CLOUD_ID_KEY] = "foo"
         Mockito.`when`(
-            kit.kitManager
+            kit
+                .kitManager
                 .getIntegrationAttributes(
                     Mockito.any(KitIntegration::class.java),
                 ),
