@@ -100,9 +100,10 @@ class AdobeKitTest {
         val integrationAttributes = HashMap<String, String>()
         integrationAttributes[AdobeKitBase.MARKETING_CLOUD_ID_KEY] = "foo"
         Mockito.`when`(
-            kit.kitManager.getIntegrationAttributes(
-                Mockito.any(KitIntegration::class.java),
-            ),
+            kit.kitManager
+                .getIntegrationAttributes(
+                    Mockito.any(KitIntegration::class.java),
+                ),
         )
             .thenReturn(integrationAttributes)
 
@@ -123,13 +124,15 @@ class AdobeKitTest {
         }
         val url1Split =
             Arrays.asList(
-                *url1!!.split("&".toRegex())
+                *url1!!
+                    .split("&".toRegex())
                     .dropLastWhile { it.isEmpty() }
                     .toTypedArray(),
             )
         val url2Split =
             Arrays.asList(
-                *url2!!.split("&".toRegex())
+                *url2!!
+                    .split("&".toRegex())
                     .dropLastWhile { it.isEmpty() }
                     .toTypedArray(),
             )
