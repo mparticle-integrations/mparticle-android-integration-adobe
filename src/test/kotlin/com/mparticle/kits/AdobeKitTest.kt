@@ -1,23 +1,20 @@
 package com.mparticle.kits
 
 import android.content.Context
-
 import com.mparticle.MParticle
 import com.mparticle.MParticleOptions
-import com.mparticle.internal.KitManager
-import com.mparticle.internal.MPUtility
+import com.mparticle.internal.KitManagerImpl
+import com.mparticle.kits.AdobeKitBase
+import com.mparticle.kits.KitIntegration
+import com.mparticle.kits.KitIntegrationFactory
 import org.junit.Assert
-
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
-
-import java.net.URL
-import java.util.ArrayList
 import java.util.Arrays
-import java.util.Collections
 import java.util.HashMap
-
-import org.junit.Assert.*
 
 class AdobeKitTest {
 
@@ -72,7 +69,7 @@ class AdobeKitTest {
             "<REGION>",
             "<PUSH TOKEN>",
             "<GAID>",
-            HashMap()
+            HashMap(),
         )
         val testUrl1 =
             "d_mid=<MCID>&d_ver=2&d_orgid=<ORG ID>&d_cid=20914%01<GAID>&d_cid=20919%01<PUSH TOKEN>&dcs_region=<REGION>&d_blob=<BLOB>&d_ptfm=android"
@@ -88,7 +85,7 @@ class AdobeKitTest {
             "<REGION>",
             "<PUSH TOKEN>",
             "<GAID>",
-            userIdentities
+            userIdentities,
         )
         val testUrls2 =
             "d_mid=<MCID>&d_ver=2&d_orgid=<ORG ID>&d_cid=20914%01<GAID>&d_cid=20919%01<PUSH TOKEN>&dcs_region=<REGION>&d_blob=<BLOB>&d_ptfm=android&d_cid_ic=customerid%01<CUSTOMER ID>&d_cid_ic=email%01<EMAIL>"
@@ -102,7 +99,9 @@ class AdobeKitTest {
         val integrationAttributes = HashMap<String, String>()
         integrationAttributes[AdobeKitBase.MARKETING_CLOUD_ID_KEY] = "foo"
         Mockito.`when`(
-            kit.kitManager.getIntegrationAttributes(Mockito.any(KitIntegration::class.java))
+            kit.kitManager.getIntegrationAttributes(
+                Mockito.any(KitIntegration::class.java),
+            ),
         ).thenReturn(integrationAttributes)
 
         val settings = HashMap<String, String>()
@@ -117,16 +116,21 @@ class AdobeKitTest {
         if (url1 == null && url2 == null) {
             return
         }
-        val url1Split = Arrays.asList(*url1!!.split("&".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray())
-        val url2Split = Arrays.asList(*url2!!.split("&".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray())
+        val url1Split = Arrays.asList(
+            *url1!!.split("&".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray(),
+        )
+        val url2Split = Arrays.asList(
+            *url2!!.split("&".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray(),
+        )
         assertEquals(url1Split.size.toLong(), url2Split.size.toLong())
         url1Split.sort()
         url2Split.sort()
         for (i in url1Split.indices) {
-            if (url1Split[i] != url2Split[i])
+            if (url1Split[i] != url2Split[i]) {
                 assertTrue(false)
+            }
         }
     }
 }
