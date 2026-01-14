@@ -3,8 +3,8 @@ package com.mparticle.kits
 import android.content.Context
 import com.mparticle.MParticle
 import com.mparticle.MParticleOptions
-import com.mparticle.internal.KitManagerImpl
 import com.mparticle.kits.AdobeKitBase
+import com.mparticle.kits.KitManagerImpl
 import com.mparticle.kits.KitIntegration
 import com.mparticle.kits.KitIntegrationFactory
 import org.junit.Assert
@@ -104,8 +104,7 @@ class AdobeKitTest {
                 .getIntegrationAttributes(
                     Mockito.any(KitIntegration::class.java),
                 ),
-        )
-            .thenReturn(integrationAttributes)
+        ).thenReturn(integrationAttributes)
 
         val settings = HashMap<String, String>()
         settings[AdobeKitBase.AUDIENCE_MANAGER_SERVER] = "some.random.url"
