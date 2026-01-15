@@ -152,11 +152,10 @@ abstract class AdobeKitBase :
         userIdentities: Map<IdentityType, String>,
     ): String {
         val builder = UrlBuilder()
-        builder
-            .append(
-                D_MID_KEY,
-                marketingCloudId,
-            )
+        builder.append(
+            D_MID_KEY,
+            marketingCloudId,
+        )
             .append(
                 D_ORIG_ID_KEY,
                 orgId,
@@ -186,11 +185,10 @@ abstract class AdobeKitBase :
                 gaid,
             )
         for ((key, value) in userIdentities) {
-            builder
-                .appendCustomIdentity(
-                    getServerString(key),
-                    value,
-                )
+            builder.appendCustomIdentity(
+                getServerString(key),
+                value,
+            )
         }
         return builder.toString()
     }
