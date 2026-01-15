@@ -152,35 +152,29 @@ abstract class AdobeKitBase :
         userIdentities: Map<IdentityType, String>,
     ): String {
         val builder = UrlBuilder()
-        builder.append(
-            D_MID_KEY,
-            marketingCloudId,
-        )
+        builder
             .append(
+                D_MID_KEY,
+                marketingCloudId,
+            ).append(
                 D_ORIG_ID_KEY,
                 orgId,
-            )
-            .append(
+            ).append(
                 D_BLOB_KEY,
                 dBlob,
-            )
-            .append(
+            ).append(
                 DCS_REGION_KEY,
                 dcsRegion,
-            )
-            .append(
+            ).append(
                 D_PLATFORM_KEY,
                 "android",
-            )
-            .append(
+            ).append(
                 D_VER,
                 dVer,
-            )
-            .appendCustomIdentity(
+            ).appendCustomIdentity(
                 PUSH_TOKEN_KEY,
                 pushId,
-            )
-            .appendCustomIdentity(
+            ).appendCustomIdentity(
                 GOOGLE_AD_ID_KEY,
                 gaid,
             )
