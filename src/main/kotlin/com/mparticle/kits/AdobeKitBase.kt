@@ -123,7 +123,8 @@ abstract class AdobeKitBase :
         userIdentities: Map<IdentityType, String>,
     ): String {
         val builder = UrlBuilder()
-        builder.append(D_MID_KEY, marketingCloudId)
+        builder
+            .append(D_MID_KEY, marketingCloudId)
             .append(D_ORIG_ID_KEY, orgId)
             .append(D_BLOB_KEY, dBlob)
             .append(DCS_REGION_KEY, dcsRegion)
@@ -207,6 +208,7 @@ abstract class AdobeKitBase :
     private inner class UrlBuilder {
         var builder: StringBuilder = StringBuilder()
         var hasValue = false
+
         fun append(key: String?, value: String?): UrlBuilder {
             if (KitUtils.isEmpty(key) || KitUtils.isEmpty(value)) {
                 return this
