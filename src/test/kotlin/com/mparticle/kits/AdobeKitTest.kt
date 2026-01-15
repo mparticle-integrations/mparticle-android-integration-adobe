@@ -105,8 +105,7 @@ class AdobeKitTest {
                     .getIntegrationAttributes(
                         Mockito.any(KitIntegration::class.java),
                     ),
-            )
-            .thenReturn(integrationAttributes)
+            ).thenReturn(integrationAttributes)
 
         val settings = HashMap<String, String>()
         settings[AdobeKitBase.AUDIENCE_MANAGER_SERVER] = "some.random.url"
