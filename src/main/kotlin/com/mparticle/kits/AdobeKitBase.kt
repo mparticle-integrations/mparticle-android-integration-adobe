@@ -24,7 +24,10 @@ abstract class AdobeKitBase :
     private var requestInProgress = false
 
     @Throws(IllegalArgumentException::class)
-    public override fun onKitCreate(map: Map<String, String>, context: Context): List<ReportingMessage> {
+    public override fun onKitCreate(
+        map: Map<String, String>,
+        context: Context,
+    ): List<ReportingMessage> {
         mOrgId = map[ORG_ID_KEY]
         if (map.containsKey(AUDIENCE_MANAGER_SERVER)) {
             url = map[AUDIENCE_MANAGER_SERVER]
@@ -43,17 +46,26 @@ abstract class AdobeKitBase :
         syncIds()
     }
 
-    override fun setUserAttribute(s: String, s1: String) {
+    override fun setUserAttribute(
+        s: String,
+        s1: String,
+    ) {
         syncIds()
     }
 
-    override fun setUserAttributeList(s: String, list: List<String>) {
+    override fun setUserAttributeList(
+        s: String,
+        list: List<String>,
+    ) {
         syncIds()
     }
 
     override fun supportsAttributeLists(): Boolean = false
 
-    override fun setAllUserAttributes(map: Map<String, String>, map1: Map<String, List<String>>) {
+    override fun setAllUserAttributes(
+        map: Map<String, String>,
+        map1: Map<String, List<String>>,
+    ) {
         syncIds()
     }
 
@@ -61,7 +73,10 @@ abstract class AdobeKitBase :
         syncIds()
     }
 
-    override fun setUserIdentity(identityType: IdentityType, s: String) {
+    override fun setUserIdentity(
+        identityType: IdentityType,
+        s: String,
+    ) {
         syncIds()
     }
 
@@ -73,9 +88,15 @@ abstract class AdobeKitBase :
 
     override fun willHandlePushMessage(intent: Intent): Boolean = false
 
-    override fun onPushMessageReceived(context: Context, intent: Intent) {}
+    override fun onPushMessageReceived(
+        context: Context,
+        intent: Intent,
+    ) {}
 
-    override fun onPushRegistration(instanceId: String, senderId: String): Boolean {
+    override fun onPushRegistration(
+        instanceId: String,
+        senderId: String,
+    ): Boolean {
         syncIds()
         return false
     }
@@ -110,7 +131,15 @@ abstract class AdobeKitBase :
         val pushId = kitManager.pushInstanceId
         val dBlob = dBlob
         val dcsRegion = dcsRegion
-        return encodeIds(marketingCloudId, mOrgId, dBlob, dcsRegion, pushId, gaid, userIdentities)
+        return encodeIds(
+            marketingCloudId,
+            mOrgId,
+            dBlob,
+            dcsRegion,
+            pushId,
+            gaid,
+            userIdentities,
+        )
     }
 
     fun encodeIds(
@@ -123,16 +152,45 @@ abstract class AdobeKitBase :
         userIdentities: Map<IdentityType, String>,
     ): String {
         val builder = UrlBuilder()
-        builder.append(D_MID_KEY, marketingCloudId)
-            .append(D_ORIG_ID_KEY, orgId)
-            .append(D_BLOB_KEY, dBlob)
-            .append(DCS_REGION_KEY, dcsRegion)
-            .append(D_PLATFORM_KEY, "android")
-            .append(D_VER, dVer)
-            .appendCustomIdentity(PUSH_TOKEN_KEY, pushId)
-            .appendCustomIdentity(GOOGLE_AD_ID_KEY, gaid)
+        builder
+            .append(
+                D_MID_KEY,
+                marketingCloudId,
+            )
+            .append(
+                D_ORIG_ID_KEY,
+                orgId,
+            )
+            .append(
+                D_BLOB_KEY,
+                dBlob,
+            )
+            .append(
+                DCS_REGION_KEY,
+                dcsRegion,
+            )
+            .append(
+                D_PLATFORM_KEY,
+                "android",
+            )
+            .append(
+                D_VER,
+                dVer,
+            )
+            .appendCustomIdentity(
+                PUSH_TOKEN_KEY,
+                pushId,
+            )
+            .appendCustomIdentity(
+                GOOGLE_AD_ID_KEY,
+                gaid,
+            )
         for ((key, value) in userIdentities) {
-            builder.appendCustomIdentity(getServerString(key), value)
+            builder
+                .appendCustomIdentity(
+                    getServerString(key),
+                    value,
+                )
         }
         return builder.toString()
     }
@@ -208,7 +266,10 @@ abstract class AdobeKitBase :
         var builder: StringBuilder = StringBuilder()
         var hasValue = false
 
-        fun append(key: String?, value: String?): UrlBuilder {
+        fun append(
+            key: String?,
+            value: String?,
+        ): UrlBuilder {
             if (KitUtils.isEmpty(key) || KitUtils.isEmpty(value)) {
                 return this
             }
@@ -223,9 +284,15 @@ abstract class AdobeKitBase :
             return this
         }
 
-        fun appendCustomIdentity(key: Int, value: String?): UrlBuilder = append("d_cid", "$key%01$value")
+        fun appendCustomIdentity(
+            key: Int,
+            value: String?,
+        ): UrlBuilder = append("d_cid", "$key%01$value")
 
-        fun appendCustomIdentity(key: String, value: String): UrlBuilder = append("d_cid_ic", "$key%01$value")
+        fun appendCustomIdentity(
+            key: String,
+            value: String,
+        ): UrlBuilder = append("d_cid_ic", "$key%01$value")
 
         override fun toString(): String = builder.toString()
     }
@@ -248,18 +315,19 @@ abstract class AdobeKitBase :
 
         // TODO
         // check if these are actually correct and replace
-        private fun getServerString(identityType: IdentityType): String = when (identityType) {
-            IdentityType.Other -> "other"
-            IdentityType.CustomerId -> "customerid"
-            IdentityType.Facebook -> "facebook"
-            IdentityType.Twitter -> "twitter"
-            IdentityType.Google -> "google"
-            IdentityType.Microsoft -> "microsoft"
-            IdentityType.Yahoo -> "yahoo"
-            IdentityType.Email -> "email"
-            IdentityType.Alias -> "alias"
-            IdentityType.FacebookCustomAudienceId -> "facebookcustomaudienceid"
-            else -> ""
-        }
+        private fun getServerString(identityType: IdentityType): String =
+            when (identityType) {
+                IdentityType.Other -> "other"
+                IdentityType.CustomerId -> "customerid"
+                IdentityType.Facebook -> "facebook"
+                IdentityType.Twitter -> "twitter"
+                IdentityType.Google -> "google"
+                IdentityType.Microsoft -> "microsoft"
+                IdentityType.Yahoo -> "yahoo"
+                IdentityType.Email -> "email"
+                IdentityType.Alias -> "alias"
+                IdentityType.FacebookCustomAudienceId -> "facebookcustomaudienceid"
+                else -> ""
+            }
     }
 }
