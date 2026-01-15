@@ -123,8 +123,7 @@ abstract class AdobeKitBase :
         userIdentities: Map<IdentityType, String>,
     ): String {
         val builder = UrlBuilder()
-        builder
-            .append(D_MID_KEY, marketingCloudId)
+        builder.append(D_MID_KEY, marketingCloudId)
             .append(D_ORIG_ID_KEY, orgId)
             .append(D_BLOB_KEY, dBlob)
             .append(DCS_REGION_KEY, dcsRegion)
